@@ -15,6 +15,7 @@
 //==============================================================================
 SamplerAudioProcessor::SamplerAudioProcessor()
 {
+    sampler.addVoice (new SamplerVoice());
 }
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
@@ -187,4 +188,15 @@ void SamplerAudioProcessor::setStateInformation (const void* data, int sizeInByt
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new SamplerAudioProcessor();
+}
+
+//
+
+void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
+{
+    BigInteger allNotes;
+    allNotes.setRange (0, 128, true);
+    
+    sampler.addSound (new SamplerSound ("some name", audioReader, allNotes, 74, 0.1, 0.1, 10.0));
+    DBG("sampler.getNumSounds() " + String(sampler.getNumSounds()));
 }

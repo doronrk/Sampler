@@ -53,10 +53,14 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    SamplerAudioProcessor& getSamplerAudioProcessor()
+    {
+        return static_cast<SamplerAudioProcessor&>(processor);
+    }
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Component> sampleDropArea;
+    ScopedPointer<SampleDropArea> sampleDropArea;
 
 
     //==============================================================================

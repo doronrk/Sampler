@@ -27,10 +27,11 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-SampleDropArea::SampleDropArea ()
+SampleDropArea::SampleDropArea (SamplerAudioProcessor &p)
     : thumbnailScroller(false),
       thumbnailCache(5),
       thumbnail(512, formatManager, thumbnailCache),
+      sampler(p),
       zoomFactor(0.0)
 {
 
@@ -41,16 +42,18 @@ SampleDropArea::SampleDropArea ()
 
 
     //[Constructor] You can add your own custom stuff here..
-    DBG("sample drop area constructor called");
     formatManager.registerBasicFormats();
 
     // scrollbar
-    addAndMakeVisible(thumbnailScroller);
+    //addAndMakeVisible(thumbnailScroller);
+    addChildComponent(thumbnailScroller);
     thumbnailScroller.addListener(this);
-    thumbnailScroller.setAutoHide(false);
     thumbnailScroller.setBounds (getLocalBounds().removeFromBottom (14).reduced (2));
+    thumbnailScroller.setVisible(false);
 
     thumbnail.addChangeListener(this);
+    
+    startTimer(1000);
     //[/Constructor]
 }
 
@@ -78,7 +81,6 @@ void SampleDropArea::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
     if (thumbnail.getTotalLength() > 0.0)
     {
-        DBG("painting thumbnail");
         Rectangle<int> thumbArea = getLocalBounds();
         thumbArea.removeFromBottom(thumbnailScroller.getHeight() + 4);
         thumbnail.drawChannels(g, thumbArea.reduced(2), visibleThumbnailRange.getStart(), visibleThumbnailRange.getEnd(), 1.0f);
@@ -86,7 +88,6 @@ void SampleDropArea::paint (Graphics& g)
     }
     else
     {
-        DBG("not painting thumbnail since no thumbnail length < 0.0");
         g.setFont(14.0f);
         g.drawFittedText("no audio file selected", getLocalBounds(), Justification::centred, 2);
     }
@@ -103,6 +104,8 @@ void SampleDropArea::mouseWheelMove (const MouseEvent& e, const MouseWheelDetail
 {
     if (thumbnail.getTotalLength() > 0.0)
     {
+        thumbnailScroller.setVisible(true);
+        //thumbnailScroller.setVisible(true);
         if ( wheel.deltaX * wheel.deltaX > wheel.deltaY * wheel.deltaY)
         {
             if (wheel.deltaX != 0.0)
@@ -158,29 +161,27 @@ bool SampleDropArea::isInterestedInFileDrag (const StringArray& files)
 
 void SampleDropArea::filesDropped (const StringArray& files, int /*x*/, int /*y*/)
 {
-    DBG("files dropped");
     lastFileDropped = File (files[0]);
     thumbnail.setSource(new FileInputSource(lastFileDropped));
     const Range<double> newRange (0.0, thumbnail.getTotalLength());
     thumbnailScroller.setRangeLimits(newRange);
     setVisibleThumbnailRange(newRange);
     repaint();
+    AudioFormatReader *reader = formatManager.createReaderFor(lastFileDropped);
+    sampler.setNewSample(*reader);
 }
 
 void SampleDropArea::changeListenerCallback (ChangeBroadcaster* source)
 {
     // this method is called by the thumbnail when it has changed, so we should repaint it..
-    DBG("change listener callback");
     if (source == &thumbnail)
     {
-        DBG("changebroadcaster source as the thumbnail");
         repaint();
     }
 }
 
 void SampleDropArea::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart)
 {
-    DBG ("scrollBarMoved ccalled");
     if (scrollBarThatHasMoved == &thumbnailScroller)
     {
         setVisibleThumbnailRange(visibleThumbnailRange.movedToStartAt (newRangeStart));
@@ -189,10 +190,14 @@ void SampleDropArea::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double ne
 
 void SampleDropArea::setVisibleThumbnailRange (Range<double> newRange)
 {
-    DBG ("setVisibleThumbnailRange called");
     visibleThumbnailRange = newRange;
     thumbnailScroller.setCurrentRange (visibleThumbnailRange, dontSendNotification);
     repaint();
+}
+
+void SampleDropArea::timerCallback()
+{
+    thumbnailScroller.setVisible(false);
 }
 
 

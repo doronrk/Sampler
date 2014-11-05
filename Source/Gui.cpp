@@ -31,7 +31,7 @@
 Gui::Gui (SamplerAudioProcessor &p)
     : AudioProcessorEditor (&p)
 {
-    addAndMakeVisible (sampleDropArea = new SampleDropArea());
+    addAndMakeVisible (sampleDropArea = new SampleDropArea(p));
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -62,7 +62,7 @@ void Gui::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
+    g.fillAll (Colours::cornsilk);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -70,7 +70,7 @@ void Gui::paint (Graphics& g)
 
 void Gui::resized()
 {
-    sampleDropArea->setBounds (proportionOfWidth (0.0500f), 0, proportionOfWidth (0.5000f), proportionOfHeight (0.5000f));
+    sampleDropArea->setBounds (9, 9, proportionOfWidth (0.5000f), proportionOfHeight (0.5000f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -94,9 +94,9 @@ BEGIN_JUCER_METADATA
                  constructorParams="SamplerAudioProcessor &amp;p" variableInitialisers="AudioProcessorEditor (&amp;p)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="600" initialHeight="300">
-  <BACKGROUND backgroundColour="ffffffff"/>
-  <JUCERCOMP name="" id="cf0ea896cd8ceeb0" memberName="sampleDropArea" virtualName=""
-             explicitFocusOrder="0" pos="5% 0 50% 50%" sourceFile="SampleDropArea.cpp"
+  <BACKGROUND backgroundColour="fffff8dc"/>
+  <JUCERCOMP name="" id="cf0ea896cd8ceeb0" memberName="sampleDropArea" virtualName="SampleDropArea"
+             explicitFocusOrder="0" pos="9 9 50% 50%" sourceFile="SampleDropArea.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

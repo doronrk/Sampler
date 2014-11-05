@@ -22,6 +22,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
+#include "PluginProcessor.h"
 //[/Headers]
 
 
@@ -37,11 +38,12 @@
 class SampleDropArea  : public Component,
                         public FileDragAndDropTarget,
                         private ChangeListener,
-                        private ScrollBar::Listener
+                        private ScrollBar::Listener,
+                        private Timer
 {
 public:
     //==============================================================================
-    SampleDropArea ();
+    SampleDropArea (SamplerAudioProcessor &p);
     ~SampleDropArea();
 
     //==============================================================================
@@ -69,10 +71,13 @@ private:
     AudioThumbnail thumbnail;
     AudioFormatManager formatManager;
     
+    SamplerAudioProcessor &sampler;
+    
     double zoomFactor;
     
     void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart);
     void setVisibleThumbnailRange (Range<double> newRange);
+    void timerCallback();
     //[/UserVariables]
 
     //==============================================================================
