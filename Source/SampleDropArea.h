@@ -35,7 +35,9 @@
                                                                     //[/Comments]
 */
 class SampleDropArea  : public Component,
-                        public FileDragAndDropTarget
+                        public FileDragAndDropTarget,
+                        private ChangeListener,
+                        private ScrollBar::Listener
 {
 public:
     //==============================================================================
@@ -47,6 +49,9 @@ public:
     File getLastDroppedFile() const noexcept;
     bool isInterestedInFileDrag (const StringArray& /*files*/) override;
     void filesDropped (const StringArray& files, int /*x*/, int /*y*/) override;
+    void changeListenerCallback (ChangeBroadcaster*);
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails& wheel);
+    void adjustZoomFactor (const MouseEvent& e, double amount);
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -56,11 +61,18 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    ScrollBar thumbnailScroller;
+    Range<double> visibleThumbnailRange;
 
     File lastFileDropped; // the sample
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
     AudioFormatManager formatManager;
+    
+    double zoomFactor;
+    
+    void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart);
+    void setVisibleThumbnailRange (Range<double> newRange);
     //[/UserVariables]
 
     //==============================================================================

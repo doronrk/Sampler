@@ -56,7 +56,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<SampleDropArea> sampleDropArea;
+    ScopedPointer<Component> sampleDropArea;
 
 
     //==============================================================================

@@ -40,6 +40,7 @@ Gui::Gui (SamplerAudioProcessor &p)
 
 
     //[Constructor] You can add your own custom stuff here..
+    DBG("Gui constructor called");
     //[/Constructor]
 }
 
@@ -69,7 +70,7 @@ void Gui::paint (Graphics& g)
 
 void Gui::resized()
 {
-    sampleDropArea->setBounds (0, 0, proportionOfWidth (0.5000f), proportionOfHeight (0.5000f));
+    sampleDropArea->setBounds (proportionOfWidth (0.0500f), 0, proportionOfWidth (0.5000f), proportionOfHeight (0.5000f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -95,7 +96,7 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="600" initialHeight="300">
   <BACKGROUND backgroundColour="ffffffff"/>
   <JUCERCOMP name="" id="cf0ea896cd8ceeb0" memberName="sampleDropArea" virtualName=""
-             explicitFocusOrder="0" pos="0 0 50% 50%" sourceFile="SampleDropArea.cpp"
+             explicitFocusOrder="0" pos="5% 0 50% 50%" sourceFile="SampleDropArea.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 
