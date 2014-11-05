@@ -201,6 +201,17 @@ void SampleDropArea::timerCallback()
 }
 
 
+void SampleDropArea::mouseDown(const MouseEvent &event)
+{
+    sampler.beginPreviewSound(74);
+    
+}
+
+void SampleDropArea::mouseUp(const MouseEvent &event)
+{
+    sampler.endPreviewSound(74);
+}
+
 
 //[/MiscUserCode]
 

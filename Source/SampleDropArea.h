@@ -54,6 +54,10 @@ public:
     void changeListenerCallback (ChangeBroadcaster*);
     void mouseWheelMove (const MouseEvent&, const MouseWheelDetails& wheel);
     void adjustZoomFactor (const MouseEvent& e, double amount);
+    
+    void mouseDown(const MouseEvent &event);
+    void mouseUp(const MouseEvent &event);
+
     //[/UserMethods]
 
     void paint (Graphics& g);

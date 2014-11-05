@@ -129,33 +129,26 @@ void SamplerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    DBG("prepare to play called");
+    sampler.setCurrentPlaybackSampleRate(sampleRate);
 }
 
 void SamplerAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+    DBG("release resources called");
 }
 
 void SamplerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // I've added this to avoid people getting screaming feedback
-    // when they first compile the plugin, but obviously you don't need to
-    // this code if your algorithm already fills all the output channels.
+    // clear extra channels
     for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
-        float* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+        buffer.clear (i, 0, buffer.getNumSamples());
     }
+
+    sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
 //==============================================================================
@@ -197,6 +190,16 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     BigInteger allNotes;
     allNotes.setRange (0, 128, true);
     
-    sampler.addSound (new SamplerSound ("some name", audioReader, allNotes, 74, 0.1, 0.1, 10.0));
+    sampler.addSound (new SamplerSound ("some name", audioReader, allNotes, 74, 0.0, 0.0, 10.0));
     DBG("sampler.getNumSounds() " + String(sampler.getNumSounds()));
+}
+
+void SamplerAudioProcessor::beginPreviewSound(int midiNoteNumber)
+{
+    sampler.noteOn(0, midiNoteNumber, .80);
+}
+
+void SamplerAudioProcessor::endPreviewSound(int midiNoteNumber)
+{
+    sampler.noteOff(0, midiNoteNumber, .80, true);
 }
