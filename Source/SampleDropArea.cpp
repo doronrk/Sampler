@@ -167,8 +167,9 @@ void SampleDropArea::filesDropped (const StringArray& files, int /*x*/, int /*y*
     thumbnailScroller.setRangeLimits(newRange);
     setVisibleThumbnailRange(newRange);
     repaint();
-    AudioFormatReader *reader = formatManager.createReaderFor(lastFileDropped);
+    ScopedPointer<AudioFormatReader> reader = formatManager.createReaderFor(lastFileDropped);
     sampler.setNewSample(*reader);
+    reader = nullptr;
 }
 
 void SampleDropArea::changeListenerCallback (ChangeBroadcaster* source)

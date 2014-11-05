@@ -40,7 +40,6 @@ Gui::Gui (SamplerAudioProcessor &p)
 
 
     //[Constructor] You can add your own custom stuff here..
-    DBG("Gui constructor called");
     //[/Constructor]
 }
 
