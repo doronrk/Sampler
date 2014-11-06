@@ -39,7 +39,7 @@ class Gui  : public AudioProcessorEditor
 {
 public:
     //==============================================================================
-    Gui (SamplerAudioProcessor &p);
+    Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea);
     ~Gui();
 
     //==============================================================================
@@ -60,7 +60,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<SampleDropArea> sampleDropArea;
+    ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
 
 
     //==============================================================================

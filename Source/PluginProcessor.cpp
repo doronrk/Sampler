@@ -14,6 +14,7 @@
 
 //==============================================================================
 SamplerAudioProcessor::SamplerAudioProcessor():
+    sampleDropArea(new SampleDropArea(*this)),
     maxSampleLengthSeconds(500.0)
 {
     sampler.addVoice (new SamplerVoice());
@@ -160,7 +161,7 @@ bool SamplerAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* SamplerAudioProcessor::createEditor()
 {
-    return new Gui (*this);
+    return new Gui (*this, *sampleDropArea);
 }
 
 //==============================================================================
@@ -169,12 +170,14 @@ void SamplerAudioProcessor::getStateInformation (MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    DBG("get state information called");
 }
 
 void SamplerAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    DBG("set state information called");
 }
 
 //==============================================================================

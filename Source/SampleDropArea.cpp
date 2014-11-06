@@ -63,7 +63,6 @@ SampleDropArea::~SampleDropArea()
     //[/Destructor_pre]
 
 
-
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
 }
@@ -169,7 +168,6 @@ void SampleDropArea::filesDropped (const StringArray& files, int /*x*/, int /*y*
     repaint();
     ScopedPointer<AudioFormatReader> reader = formatManager.createReaderFor(lastFileDropped);
     sampler.setNewSample(*reader);
-    reader = nullptr;
 }
 
 void SampleDropArea::changeListenerCallback (ChangeBroadcaster* source)

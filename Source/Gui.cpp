@@ -19,7 +19,7 @@
 
 //[Headers] You can add your own extra header files here...
 #include "PluginProcessor.h"
-//[/Headers]
+//[/aders]
 
 #include "Gui.h"
 
@@ -28,16 +28,15 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-Gui::Gui (SamplerAudioProcessor &p)
+Gui::Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea_)
     : AudioProcessorEditor (&p)
 {
-    addAndMakeVisible (sampleDropArea = new SampleDropArea (p));
-
     //[UserPreSize]
+    sampleDropArea = &sampleDropArea_;
+    addAndMakeVisible (sampleDropArea);
     //[/UserPreSize]
-
+    
     setSize (600, 300);
-
 
     //[Constructor] You can add your own custom stuff here..
     //[/Constructor]
@@ -47,9 +46,6 @@ Gui::~Gui()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
-
-    sampleDropArea = nullptr;
-
 
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]

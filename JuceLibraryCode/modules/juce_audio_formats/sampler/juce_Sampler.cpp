@@ -119,7 +119,7 @@ void SamplerVoice::startNote (const int midiNoteNumber,
         if (sound->releaseSamples > 0)
             releaseDelta = (float) (-pitchRatio / sound->releaseSamples);
         else
-            releaseDelta = -1.0f;
+            releaseDelta = 0.0f;
     }
     else
     {
