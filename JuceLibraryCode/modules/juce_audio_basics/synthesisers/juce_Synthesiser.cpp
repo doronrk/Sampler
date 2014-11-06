@@ -183,7 +183,6 @@ void Synthesiser::handleMidiEvent (const MidiMessage& m)
 {
     if (m.isNoteOn())
     {
-        DBG("velocity " + String(m.getFloatVelocity()));
         noteOn (m.getChannel(), m.getNoteNumber(), m.getFloatVelocity());
     }
     else if (m.isNoteOff())

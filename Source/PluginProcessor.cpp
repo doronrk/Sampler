@@ -13,7 +13,8 @@
 
 
 //==============================================================================
-SamplerAudioProcessor::SamplerAudioProcessor()
+SamplerAudioProcessor::SamplerAudioProcessor():
+    maxSampleLengthSeconds(500.0)
 {
     sampler.addVoice (new SamplerVoice());
 }
@@ -187,11 +188,11 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
 {
+    sampler.clearSounds();
     BigInteger allNotes;
     allNotes.setRange (0, 128, true);
     
-    sampler.addSound (new SamplerSound ("some name", audioReader, allNotes, 74, 0.0, 0.0, 10.0));
-    DBG("sampler.getNumSounds() " + String(sampler.getNumSounds()));
+    sampler.addSound (new SamplerSound ("some name", audioReader, allNotes, 74, 0.0, 0.0, maxSampleLengthSeconds));
 }
 
 void SamplerAudioProcessor::beginPreviewSound(int midiNoteNumber)
