@@ -151,7 +151,37 @@ void SamplerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     }
 
     sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    
+    updatePositionInfo();
+    
+    double bpm = lastPosInfo.bpm;
+    int64 timeInSamples = lastPosInfo.timeInSamples;
+    double ppqPosition = lastPosInfo.ppqPosition;
+    
+    DBG("bpm " + String(bpm));
+    DBG("numSamples " + String(buffer.getNumSamples()));
+    DBG("timeInSamples " + String(timeInSamples));
+    DBG("ppqPosition " + String(ppqPosition));
+    DBG("");
 }
+
+void SamplerAudioProcessor::updatePositionInfo()
+{
+    // ask the host for the current time
+    AudioPlayHead::CurrentPositionInfo newTime;
+    
+    if (getPlayHead() != nullptr && getPlayHead()->getCurrentPosition (newTime))
+    {
+        // Successfully got the current time from the host..
+        lastPosInfo = newTime;
+    }
+    else
+    {
+        // If the host fails to fill-in the current time, we'll just clear it to a default
+        lastPosInfo.resetToDefault();
+    }
+}
+
 
 //==============================================================================
 bool SamplerAudioProcessor::hasEditor() const

@@ -76,6 +76,12 @@ private:
     //==============================================================================
     Synthesiser sampler;
     ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
+    
+    // this keeps a copy of the last set of time info that was acquired during an audio
+    // callback
+    AudioPlayHead::CurrentPositionInfo lastPosInfo;
+    void updatePositionInfo();
+    
     const double maxSampleLengthSeconds;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };

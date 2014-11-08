@@ -104,7 +104,6 @@ void SampleDropArea::mouseWheelMove (const MouseEvent& e, const MouseWheelDetail
     if (thumbnail.getTotalLength() > 0.0)
     {
         thumbnailScroller.setVisible(true);
-        //thumbnailScroller.setVisible(true);
         if ( wheel.deltaX * wheel.deltaX > wheel.deltaY * wheel.deltaY)
         {
             if (wheel.deltaX != 0.0)
