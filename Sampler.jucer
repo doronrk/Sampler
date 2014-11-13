@@ -11,6 +11,8 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
   <MAINGROUP id="LMv9GK" name="Sampler">
     <GROUP id="{58AF6B91-2ECC-2ABF-7A4D-4A2C72BEC441}" name="Source">
+      <FILE id="fu2BaZ" name="SyncSampler.cpp" compile="1" resource="0" file="Source/SyncSampler.cpp"/>
+      <FILE id="oSWrEg" name="SyncSampler.h" compile="0" resource="0" file="Source/SyncSampler.h"/>
       <FILE id="lRmSgc" name="SampleDropArea.cpp" compile="1" resource="0"
             file="Source/SampleDropArea.cpp"/>
       <FILE id="En7Wkx" name="SampleDropArea.h" compile="0" resource="0"

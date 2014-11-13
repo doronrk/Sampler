@@ -10,6 +10,7 @@
 
 #include "PluginProcessor.h"
 #include "Gui.h"
+#include "SyncSampler.h"
 
 
 //==============================================================================
@@ -17,7 +18,8 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     sampleDropArea(new SampleDropArea(*this)),
     maxSampleLengthSeconds(500.0)
 {
-    sampler.addVoice (new SamplerVoice());
+    sampler.addVoice (new SyncSamplerVoice());
+    //sampler.addVoice (new SamplerVoice());
 }
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
@@ -154,15 +156,15 @@ void SamplerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     
     updatePositionInfo();
     
-    double bpm = lastPosInfo.bpm;
-    int64 timeInSamples = lastPosInfo.timeInSamples;
-    double ppqPosition = lastPosInfo.ppqPosition;
+//    double bpm = lastPosInfo.bpm;
+//    int64 timeInSamples = lastPosInfo.timeInSamples;
+//    double ppqPosition = lastPosInfo.ppqPosition;
     
-    DBG("bpm " + String(bpm));
-    DBG("numSamples " + String(buffer.getNumSamples()));
-    DBG("timeInSamples " + String(timeInSamples));
-    DBG("ppqPosition " + String(ppqPosition));
-    DBG("");
+//    DBG("bpm " + String(bpm));
+//    DBG("numSamples " + String(buffer.getNumSamples()));
+//    DBG("timeInSamples " + String(timeInSamples));
+//    DBG("ppqPosition " + String(ppqPosition));
+//    DBG("");
 }
 
 void SamplerAudioProcessor::updatePositionInfo()
@@ -225,7 +227,7 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     BigInteger allNotes;
     allNotes.setRange (0, 128, true);
     
-    sampler.addSound (new SamplerSound ("some name", audioReader, allNotes, 74, 0.0, 0.0, maxSampleLengthSeconds));
+    sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, 74, 0.0, 0.0, maxSampleLengthSeconds));
 }
 
 void SamplerAudioProcessor::beginPreviewSound(int midiNoteNumber)
