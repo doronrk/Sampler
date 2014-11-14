@@ -152,6 +152,7 @@ void SamplerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         buffer.clear (i, 0, buffer.getNumSamples());
     }
 
+    
     sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     
     updatePositionInfo();
