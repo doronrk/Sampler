@@ -50,9 +50,7 @@ midiRootNote (midiNoteForNormalPitch),
 durationRelQuarterNote(durationRelQuarterNote_),
 sustainMode(sustainMode_)
 {
-    DBG("00");
     sourceSampleRate = source.sampleRate;
-    DBG("01");
     if (sourceSampleRate <= 0 || source.lengthInSamples <= 0)
     {
         length = 0;
@@ -61,17 +59,12 @@ sustainMode(sustainMode_)
     }
     else
     {
-        DBG("02");
         length = jmin ((int) source.lengthInSamples,
                        (int) (maxSampleLengthSeconds * sourceSampleRate));
-        DBG("03");
         data = new AudioSampleBuffer (jmin (2, (int) source.numChannels), length + 4);
-        DBG("04");
         source.read (data, 0, length + 4, 0, true, true);
-        DBG("05");
         attackSamples = roundToInt (attackTimeSecs * sourceSampleRate);
         releaseSamples = roundToInt (releaseTimeSecs * sourceSampleRate);
-        DBG("06");
     }
 }
 
@@ -120,10 +113,6 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
         pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0)
         * sound->sourceSampleRate / getSampleRate();
         
-        
-//        int64 timeInSamples = lastPosInfo.timeInSamples;
-//        double ppqPosition = lastPosInfo.ppqPosition;
-        
         double bpm = lastPosInfo.bpm;
         double secondsPerBeat = 60.0 / bpm;
         endSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
@@ -136,12 +125,7 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
             DBG("sound->length " + String(sound->length));
             return;
         }
-        
-        DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
-        DBG("endSample " + String(endSample));
-        DBG("");
-        
-        
+
         sourceSamplePosition = 0.0;
         lgain = velocity;
         rgain = velocity;
@@ -163,7 +147,7 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
         if (sound->releaseSamples > 0)
             releaseDelta = (float) (-pitchRatio / sound->releaseSamples);
         else
-            releaseDelta = 0.0f;
+            releaseDelta = -1.0f;
     }
     else
     {
@@ -280,6 +264,7 @@ void SyncSamplerVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int sta
                 switch (sustainMode)
                 {
                     case SyncSamplerSound::LoopReverse:
+                        sourceSamplePosition = 0.0;
                         pitchRatio = - pitchRatio;
                         break;
                     default:

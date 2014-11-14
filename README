@@ -30,3 +30,8 @@ TODO:
     - Idea to void drift
         - record the ppqPosition when the note begins
         - if duration is a 1/4 note, should recycle at origin ppq + 1
+
+
+Problems:
+    crashes Live when aif dropped 
+    if bpm is adjusted during playback to range which would normally cause ("not enough samples") warning, strange noises produced
