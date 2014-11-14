@@ -19,7 +19,6 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     maxSampleLengthSeconds(500.0)
 {
     sampler.addVoice (new SyncSamplerVoice());
-    //sampler.addVoice (new SamplerVoice());
 }
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
@@ -155,17 +154,6 @@ void SamplerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     updatePositionInfo();
     
     sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples(), lastPosInfo);
-    
-    
-//    double bpm = lastPosInfo.bpm;
-//    int64 timeInSamples = lastPosInfo.timeInSamples;
-//    double ppqPosition = lastPosInfo.ppqPosition;
-    
-//    DBG("bpm " + String(bpm));
-//    DBG("numSamples " + String(buffer.getNumSamples()));
-//    DBG("timeInSamples " + String(timeInSamples));
-//    DBG("ppqPosition " + String(ppqPosition));
-//    DBG("");
 }
 
 void SamplerAudioProcessor::updatePositionInfo()

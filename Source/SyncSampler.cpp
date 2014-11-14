@@ -112,14 +112,17 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
         pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0)
         * sound->sourceSampleRate / getSampleRate();
         
+//        int64 timeInSamples = lastPosInfo.timeInSamples;
+//        double ppqPosition = lastPosInfo.ppqPosition;
+        
         double bpm = lastPosInfo.bpm;
-        int64 timeInSamples = lastPosInfo.timeInSamples;
-        double ppqPosition = lastPosInfo.ppqPosition;
+        double secondsPerBeat = 60.0 / bpm;
+        double endSample = secondsPerBeat * getSampleRate() * pitchRatio;
         
         DBG("bpm " + String(bpm));
-        DBG("timeInSamples " + String(timeInSamples));
-        DBG("ppqPosition " + String(ppqPosition));
+        DBG("endSample " + String(endSample));
         DBG("");
+        
         
         sourceSamplePosition = 0.0;
         lgain = velocity;
