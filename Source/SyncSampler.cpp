@@ -41,13 +41,18 @@ SyncSamplerSound::SyncSamplerSound (const String& soundName,
                             const int midiNoteForNormalPitch,
                             const double attackTimeSecs,
                             const double releaseTimeSecs,
-                            const double maxSampleLengthSeconds)
+                            const double maxSampleLengthSeconds,
+                            const double durationRelQuarterNote_,
+                            const SustainMode sustainMode_)
 : name (soundName),
 midiNotes (notes),
-midiRootNote (midiNoteForNormalPitch)
+midiRootNote (midiNoteForNormalPitch),
+durationRelQuarterNote(durationRelQuarterNote_),
+sustainMode(sustainMode_)
 {
+    DBG("00");
     sourceSampleRate = source.sampleRate;
-    
+    DBG("01");
     if (sourceSampleRate <= 0 || source.lengthInSamples <= 0)
     {
         length = 0;
@@ -56,15 +61,17 @@ midiRootNote (midiNoteForNormalPitch)
     }
     else
     {
+        DBG("02");
         length = jmin ((int) source.lengthInSamples,
                        (int) (maxSampleLengthSeconds * sourceSampleRate));
-        
+        DBG("03");
         data = new AudioSampleBuffer (jmin (2, (int) source.numChannels), length + 4);
-        
+        DBG("04");
         source.read (data, 0, length + 4, 0, true, true);
-        
+        DBG("05");
         attackSamples = roundToInt (attackTimeSecs * sourceSampleRate);
         releaseSamples = roundToInt (releaseTimeSecs * sourceSampleRate);
+        DBG("06");
     }
 }
 
@@ -86,6 +93,7 @@ bool SyncSamplerSound::appliesToChannel (int /*midiChannel*/)
 SyncSamplerVoice::SyncSamplerVoice()
     : pitchRatio (0.0),
     sourceSamplePosition (0.0),
+    endSample(0.0),
     lgain (0.0f), rgain (0.0f),
     attackReleaseLevel (0), attackDelta (0), releaseDelta (0),
     isInAttack (false), isInRelease (false)
@@ -112,14 +120,24 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
         pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0)
         * sound->sourceSampleRate / getSampleRate();
         
+        
 //        int64 timeInSamples = lastPosInfo.timeInSamples;
 //        double ppqPosition = lastPosInfo.ppqPosition;
         
         double bpm = lastPosInfo.bpm;
         double secondsPerBeat = 60.0 / bpm;
-        double endSample = secondsPerBeat * getSampleRate() * pitchRatio;
+        endSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
         
-        DBG("bpm " + String(bpm));
+        if (endSample >= sound->length)
+        {
+            DBG("duration requires too many samples");
+            DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
+            DBG("endSample " + String(endSample));
+            DBG("sound->length " + String(sound->length));
+            return;
+        }
+        
+        DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
         DBG("endSample " + String(endSample));
         DBG("");
         
@@ -187,6 +205,8 @@ void SyncSamplerVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int sta
         float* outL = outputBuffer.getWritePointer (0, startSample);
         float* outR = outputBuffer.getNumChannels() > 1 ? outputBuffer.getWritePointer (1, startSample) : nullptr;
         
+        SyncSamplerSound::SustainMode sustainMode = playingSound->sustainMode;
+        
         while (--numSamples >= 0)
         {
             const int pos = (int) sourceSamplePosition;
@@ -240,10 +260,33 @@ void SyncSamplerVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int sta
             
             sourceSamplePosition += pitchRatio;
             
-            if (sourceSamplePosition > playingSound->length)
+            if (sourceSamplePosition > endSample)
             {
-                stopNote (0.0f, false);
-                break;
+                switch (sustainMode)
+                {
+                    case SyncSamplerSound::Once:
+                        stopNote (0.0f, false);
+                        break;
+                    case SyncSamplerSound::LoopBeginning:
+                        sourceSamplePosition = 0;
+                        break;
+                    default:
+                        // loop reverse
+                        pitchRatio = - pitchRatio;
+                }
+            }
+            if (sourceSamplePosition < 0)
+            {
+                switch (sustainMode)
+                {
+                    case SyncSamplerSound::LoopReverse:
+                        pitchRatio = - pitchRatio;
+                        break;
+                    default:
+                        DBG("sourceSamplePosition < 0 not in LoopReverseMode");
+                        DBG("sourceSamplePosition " + String(sourceSamplePosition));
+                        jassertfalse;
+                }
             }
         }
     }

@@ -212,11 +212,19 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
 {
+    DBG("set new sample called");
     sampler.clearSounds();
+    DBG("0");
     BigInteger allNotes;
     allNotes.setRange (0, 128, true);
+    DBG("1");
     
-    sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, 74, 0.0, 0.0, maxSampleLengthSeconds));
+    int defaultRootMidi = 74;
+    double defaultDurationRelQuarterNote = 1.0;
+    SyncSamplerSound::SustainMode defaultSustainMode = SyncSamplerSound::SustainMode::LoopReverse;
+    DBG("2");
+    sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, defaultRootMidi, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, defaultSustainMode));
+    DBG("3");
 }
 
 void SamplerAudioProcessor::beginPreviewSound(int midiNoteNumber)

@@ -56,7 +56,12 @@
  */
 class SyncSamplerSound    : public SyncSynthesiserSound
 {
+    
+    
 public:
+    
+    enum SustainMode { Once, LoopBeginning, LoopReverse};
+
     //==============================================================================
     /** Creates a sampled sound from an audio reader.
      
@@ -82,7 +87,9 @@ public:
                   int midiNoteForNormalPitch,
                   double attackTimeSecs,
                   double releaseTimeSecs,
-                  double maxSampleLengthSeconds);
+                  double maxSampleLengthSeconds,
+                  double durationRelQuarterNote,
+                  SustainMode sustainMode);
     
     /** Destructor. */
     ~SyncSamplerSound();
@@ -104,6 +111,8 @@ public:
     
 private:
     //==============================================================================
+    
+    
     friend class SyncSamplerVoice;
     
     String name;
@@ -112,6 +121,8 @@ private:
     BigInteger midiNotes;
     int length, attackSamples, releaseSamples;
     int midiRootNote;
+    double durationRelQuarterNote;
+    SustainMode sustainMode;
     
     JUCE_LEAK_DETECTOR (SyncSamplerSound)
 };
@@ -152,6 +163,7 @@ private:
     //==============================================================================
     double pitchRatio;
     double sourceSamplePosition;
+    double endSample;
     float lgain, rgain, attackReleaseLevel, attackDelta, releaseDelta;
     bool isInAttack, isInRelease;
     
