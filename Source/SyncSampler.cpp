@@ -46,7 +46,6 @@ SyncSamplerSound::SyncSamplerSound (const String& soundName,
 midiNotes (notes),
 midiRootNote (midiNoteForNormalPitch)
 {
-    DBG("SyncSamplerSound constructor called");
     sourceSampleRate = source.sampleRate;
     
     if (sourceSampleRate <= 0 || source.lengthInSamples <= 0)
@@ -91,21 +90,20 @@ SyncSamplerVoice::SyncSamplerVoice()
     attackReleaseLevel (0), attackDelta (0), releaseDelta (0),
     isInAttack (false), isInRelease (false)
 {
-    DBG("SyncSamplerVoice constructor called");
 }
 
 SyncSamplerVoice::~SyncSamplerVoice()
 {
 }
 
-bool SyncSamplerVoice::canPlaySound (SynthesiserSound* sound)
+bool SyncSamplerVoice::canPlaySound (SyncSynthesiserSound* sound)
 {
     return dynamic_cast<const SyncSamplerSound*> (sound) != nullptr;
 }
 
 void SyncSamplerVoice::startNote (const int midiNoteNumber,
                               const float velocity,
-                              SynthesiserSound* s,
+                              SyncSynthesiserSound* s,
                               const int /*currentPitchWheelPosition*/)
 {
     if (const SyncSamplerSound* const sound = dynamic_cast <const SyncSamplerSound*> (s))

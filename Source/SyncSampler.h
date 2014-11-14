@@ -40,7 +40,7 @@
 
 
 #include "JuceHeader.h"
-
+#include "SyncSynthesiser.h"
 
 //==============================================================================
 /**
@@ -54,7 +54,7 @@
  
  @see SamplerVoice, Synthesiser, SynthesiserSound
  */
-class SyncSamplerSound    : public SynthesiserSound
+class SyncSamplerSound    : public SyncSynthesiserSound
 {
 public:
     //==============================================================================
@@ -126,7 +126,7 @@ private:
  
  @see SamplerSound, Synthesiser, SynthesiserVoice
  */
-class SyncSamplerVoice    : public SynthesiserVoice
+class SyncSamplerVoice    : public SyncSynthesiserVoice
 {
 public:
     //==============================================================================
@@ -137,9 +137,9 @@ public:
     ~SyncSamplerVoice();
     
     //==============================================================================
-    bool canPlaySound (SynthesiserSound*) override;
+    bool canPlaySound (SyncSynthesiserSound*) override;
     
-    void startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int pitchWheel) override;
+    void startNote (int midiNoteNumber, float velocity, SyncSynthesiserSound*, int pitchWheel) override;
     void stopNote (float velocity, bool allowTailOff) override;
     
     void pitchWheelMoved (int newValue);

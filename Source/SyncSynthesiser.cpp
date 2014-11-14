@@ -206,7 +206,7 @@ void SyncSynthesiser::noteOn (const int midiChannel,
                           const int midiNoteNumber,
                           const float velocity)
 {
-    const ScopedLock sl (lock);
+     const ScopedLock sl (lock);
     
     for (int i = sounds.size(); --i >= 0;)
     {

@@ -12,7 +12,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "SyncSynthesiser.h"
 
 //==============================================================================
 /**
@@ -74,7 +74,7 @@ public:
 
 private:
     //==============================================================================
-    Synthesiser sampler;
+    SyncSynthesiser sampler;
     ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
     
     // this keeps a copy of the last set of time info that was acquired during an audio
