@@ -132,7 +132,7 @@ void SyncSynthesiser::setCurrentPlaybackSampleRate (const double newRate)
 }
     
 void SyncSynthesiser::renderNextBlock (AudioSampleBuffer& outputBuffer, const MidiBuffer& midiData,
-                                       int startSample, int numSamples)
+                                       int startSample, int numSamples, AudioPlayHead::CurrentPositionInfo lastPosInfo)
 {
         // must set the sample rate before using this!
     jassert (sampleRate != 0);
@@ -156,7 +156,7 @@ void SyncSynthesiser::renderNextBlock (AudioSampleBuffer& outputBuffer, const Mi
             renderVoices (outputBuffer, startSample, numThisTime);
         
         if (useEvent)
-            handleMidiEvent (m);
+            handleMidiEvent (m, lastPosInfo);
         
         startSample += numThisTime;
         numSamples -= numThisTime;
@@ -169,11 +169,11 @@ void SyncSynthesiser::renderVoices (AudioSampleBuffer& buffer, int startSample, 
         voices.getUnchecked (i)->renderNextBlock (buffer, startSample, numSamples);
 }
     
-void SyncSynthesiser::handleMidiEvent (const MidiMessage& m)
+void SyncSynthesiser::handleMidiEvent (const MidiMessage& m, AudioPlayHead::CurrentPositionInfo lastPosInfo)
 {
     if (m.isNoteOn())
     {
-        noteOn (m.getChannel(), m.getNoteNumber(), m.getFloatVelocity());
+        noteOn (m.getChannel(), m.getNoteNumber(), m.getFloatVelocity(), lastPosInfo);
     }
     else if (m.isNoteOff())
     {
@@ -204,7 +204,8 @@ void SyncSynthesiser::handleMidiEvent (const MidiMessage& m)
 //==============================================================================
 void SyncSynthesiser::noteOn (const int midiChannel,
                           const int midiNoteNumber,
-                          const float velocity)
+                          const float velocity,
+                          AudioPlayHead::CurrentPositionInfo lastPosInfo)
 {
      const ScopedLock sl (lock);
     
@@ -227,7 +228,7 @@ void SyncSynthesiser::noteOn (const int midiChannel,
             }
             
             startVoice (findFreeVoice (sound, midiChannel, midiNoteNumber, shouldStealNotes),
-                        sound, midiChannel, midiNoteNumber, velocity);
+                        sound, midiChannel, midiNoteNumber, velocity, lastPosInfo);
         }
     }
 }
@@ -236,15 +237,15 @@ void SyncSynthesiser::startVoice (SyncSynthesiserVoice* const voice,
                               SyncSynthesiserSound* const sound,
                               const int midiChannel,
                               const int midiNoteNumber,
-                              const float velocity)
+                              const float velocity,
+                              AudioPlayHead::CurrentPositionInfo lastPosInfo)
 {
     if (voice != nullptr && sound != nullptr)
     {
         if (voice->currentlyPlayingSound != nullptr)
             voice->stopNote (0.0f, false);
         
-        voice->startNote (midiNoteNumber, velocity, sound,
-                          lastPitchWheelValues [midiChannel - 1]);
+        voice->startNote (midiNoteNumber, velocity, sound, lastPitchWheelValues [midiChannel - 1], lastPosInfo);
         
         voice->currentlyPlayingNote = midiNoteNumber;
         voice->noteOnTime = ++lastNoteOnCounter;

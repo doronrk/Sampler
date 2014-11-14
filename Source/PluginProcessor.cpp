@@ -151,11 +151,11 @@ void SamplerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     {
         buffer.clear (i, 0, buffer.getNumSamples());
     }
-
-    
-    sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     
     updatePositionInfo();
+    
+    sampler.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples(), lastPosInfo);
+    
     
 //    double bpm = lastPosInfo.bpm;
 //    int64 timeInSamples = lastPosInfo.timeInSamples;
@@ -233,7 +233,7 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
 
 void SamplerAudioProcessor::beginPreviewSound(int midiNoteNumber)
 {
-    sampler.noteOn(0, midiNoteNumber, .80);
+    sampler.noteOn(0, midiNoteNumber, .80, lastPosInfo);
 }
 
 void SamplerAudioProcessor::endPreviewSound(int midiNoteNumber)

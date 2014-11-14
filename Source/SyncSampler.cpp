@@ -104,12 +104,22 @@ bool SyncSamplerVoice::canPlaySound (SyncSynthesiserSound* sound)
 void SyncSamplerVoice::startNote (const int midiNoteNumber,
                               const float velocity,
                               SyncSynthesiserSound* s,
-                              const int /*currentPitchWheelPosition*/)
+                              const int /*currentPitchWheelPosition*/,
+                              AudioPlayHead::CurrentPositionInfo lastPosInfo)
 {
     if (const SyncSamplerSound* const sound = dynamic_cast <const SyncSamplerSound*> (s))
     {
         pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0)
         * sound->sourceSampleRate / getSampleRate();
+        
+        double bpm = lastPosInfo.bpm;
+        int64 timeInSamples = lastPosInfo.timeInSamples;
+        double ppqPosition = lastPosInfo.ppqPosition;
+        
+        DBG("bpm " + String(bpm));
+        DBG("timeInSamples " + String(timeInSamples));
+        DBG("ppqPosition " + String(ppqPosition));
+        DBG("");
         
         sourceSamplePosition = 0.0;
         lgain = velocity;

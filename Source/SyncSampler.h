@@ -139,7 +139,7 @@ public:
     //==============================================================================
     bool canPlaySound (SyncSynthesiserSound*) override;
     
-    void startNote (int midiNoteNumber, float velocity, SyncSynthesiserSound*, int pitchWheel) override;
+    void startNote (int midiNoteNumber, float velocity, SyncSynthesiserSound*, int pitchWheel, AudioPlayHead::CurrentPositionInfo lastPosInfo) override;
     void stopNote (float velocity, bool allowTailOff) override;
     
     void pitchWheelMoved (int newValue);

@@ -133,7 +133,8 @@ public:
     virtual void startNote (int midiNoteNumber,
                             float velocity,
                             SyncSynthesiserSound* sound,
-                            int currentPitchWheelPosition) = 0;
+                            int currentPitchWheelPosition,
+                            AudioPlayHead::CurrentPositionInfo lastPosInfo) = 0;
     
     /** Called to stop a note.
      
@@ -365,7 +366,8 @@ public:
      */
     virtual void noteOn (int midiChannel,
                          int midiNoteNumber,
-                         float velocity);
+                         float velocity,
+                         AudioPlayHead::CurrentPositionInfo lastPosInfo);
     
     /** Triggers a note-off event.
      
@@ -478,7 +480,8 @@ public:
     void renderNextBlock (AudioSampleBuffer& outputAudio,
                           const MidiBuffer& inputMidi,
                           int startSample,
-                          int numSamples);
+                          int numSamples,
+                          AudioPlayHead::CurrentPositionInfo lastPosInfo);
     
     /** Returns the current target sample rate at which rendering is being done.
      Subclasses may need to know this so that they can pitch things correctly.
@@ -534,10 +537,11 @@ protected:
                      SyncSynthesiserSound* sound,
                      int midiChannel,
                      int midiNoteNumber,
-                     float velocity);
+                     float velocity,
+                     AudioPlayHead::CurrentPositionInfo lastPosInfo);
     
     /** Can be overridden to do custom handling of incoming midi events. */
-    virtual void handleMidiEvent (const MidiMessage&);
+    virtual void handleMidiEvent (const MidiMessage&, AudioPlayHead::CurrentPositionInfo lastPosInfo);
     
 private:
     //==============================================================================
