@@ -40,7 +40,7 @@ class SampleDropArea  : public Component,
                         public ReferenceCountedObject,
                         private ChangeListener,
                         private ScrollBar::Listener,
-                        private Timer
+                        private MultiTimer
 {
     
 public:
@@ -69,8 +69,10 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     ScrollBar thumbnailScroller;
     Range<double> visibleThumbnailRange;
-
-    File lastFileDropped; // the sample
+    DrawableRectangle positionMarker;
+    
+    //File lastFileDropped; // the sample
+    ScopedPointer<AudioFormatReader> reader;
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
     AudioFormatManager formatManager;
@@ -81,7 +83,8 @@ private:
     
     void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart);
     void setVisibleThumbnailRange (Range<double> newRange);
-    void timerCallback();
+    void timerCallback(int timerID);
+    void drawSamplePositions();
     //[/UserVariables]
 
     //==============================================================================

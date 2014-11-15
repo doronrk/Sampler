@@ -24,6 +24,10 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+// MultiTimer Map:
+    // 0 -> scroll bar remover
+    // 1 -> repaint sample positions
+
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -45,7 +49,6 @@ SampleDropArea::SampleDropArea (SamplerAudioProcessor &p)
     formatManager.registerBasicFormats();
 
     // scrollbar
-    //addAndMakeVisible(thumbnailScroller);
     addChildComponent(thumbnailScroller);
     thumbnailScroller.addListener(this);
     thumbnailScroller.setBounds (getLocalBounds().removeFromBottom (14).reduced (2));
@@ -53,7 +56,10 @@ SampleDropArea::SampleDropArea (SamplerAudioProcessor &p)
 
     thumbnail.addChangeListener(this);
     
-    startTimer(1000);
+    addAndMakeVisible(positionMarker);
+    
+    startTimer(0, 1000);
+    startTimer(1, 50);
     //[/Constructor]
 }
 
@@ -159,13 +165,13 @@ bool SampleDropArea::isInterestedInFileDrag (const StringArray& files)
 
 void SampleDropArea::filesDropped (const StringArray& files, int /*x*/, int /*y*/)
 {
-    lastFileDropped = File (files[0]);
+    File lastFileDropped = File (files[0]);
     thumbnail.setSource(new FileInputSource(lastFileDropped));
     const Range<double> newRange (0.0, thumbnail.getTotalLength());
     thumbnailScroller.setRangeLimits(newRange);
     setVisibleThumbnailRange(newRange);
     repaint();
-    ScopedPointer<AudioFormatReader> reader = formatManager.createReaderFor(lastFileDropped);
+    reader = formatManager.createReaderFor(lastFileDropped);
     sampler.setNewSample(*reader);
 }
 
@@ -193,9 +199,31 @@ void SampleDropArea::setVisibleThumbnailRange (Range<double> newRange)
     repaint();
 }
 
-void SampleDropArea::timerCallback()
+void SampleDropArea::timerCallback(int timerID)
 {
-    thumbnailScroller.setVisible(false);
+    switch(timerID)
+    {
+        case 0:
+            thumbnailScroller.setVisible(false);
+            break;
+        default:
+            drawSamplePositions();
+    }
+    
+}
+
+void SampleDropArea::drawSamplePositions()
+{
+    Array<double> *positions = sampler.getSamplePositions();
+    for (double &position: *positions)
+    {
+        double thumbnailPosition = position * getWidth();
+        Rectangle<float> rect = Rectangle<float> (thumbnailPosition, 0.0, 1.5f, (float) (getHeight()));
+        DBG("thumbnailPosition " + String(thumbnailPosition));
+        positionMarker.setRectangle(rect);
+        positionMarker.setFill(FillType(Colours::yellow));
+        positionMarker.setVisible(true);
+    }
 }
 
 

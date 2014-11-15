@@ -232,3 +232,21 @@ void SamplerAudioProcessor::endPreviewSound(int midiNoteNumber)
 {
     sampler.noteOff(0, midiNoteNumber, .80, true);
 }
+
+
+Array<double> *SamplerAudioProcessor::getSamplePositions()
+{
+    Array<double> *positions = new Array<double>();
+    int numVoices = sampler.getNumVoices();
+    for (int i = 0; i < numVoices; i++)
+    {
+        SyncSynthesiserVoice *voice= sampler.getVoice(i);
+        if (const SyncSamplerVoice* const syncVoice = dynamic_cast <const SyncSamplerVoice*> (voice))
+        {
+            double samplePos = syncVoice->getSourceSamplePosition();
+            double sampleLen = syncVoice->getCurrentSampleLength();
+            positions->add(samplePos/sampleLen);
+        }
+    }
+    return positions;
+}

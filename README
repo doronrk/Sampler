@@ -1,24 +1,4 @@
 TODO:
-    - AudioProcessing side
-        - Make a new class, SyncedSamplerVoice, which inherits SynthesizerVoice
-        - Begin by copying and pasting SamplerVoice into SyncedSamplerVoice
-        - Add new features to SyncedSamplerVoice
-            - startNote():
-                - compute pitchRatio as usual
-                - use pitchRatio/midiNoteNumber to determine the position of the
-                last sample of the SamplerSound->data that corresponds to 1/4 note duration
-                - store this range as a class level variab
-            - renderNextBlock():
-                - instead of checking whether sourceSamplePosition > playingSound->length,
-                check whether sourceSamplePosition > the upper range previously computed
-                - the length of the range must not exceed the length of the entire sample
-                    (the GUI should grey-out options which lead to this)
-            - new variables:
-                - tempo-synced sample end ()
-                - duration value (1/4, 1/8, dotted, etc.)
-                - is looping boolean
-                - sustain mode
-                    - reverse, start-over, 1-off, etc.
     - GUI side
         - Allow user to select duration value of sample, per each sample
         - Display/highlight the subsection of the sample that is currently being
@@ -27,11 +7,11 @@ TODO:
                 - bpm, duration, current note
         - Allow user to select root-note for each sample
 
-    - Idea to void drift
+    - Idea to avoid drift
         - record the ppqPosition when the note begins
         - if duration is a 1/4 note, should recycle at origin ppq + 1
 
 
 Problems:
     crashes Live when aif dropped 
-    if bpm is adjusted during playback to range which would normally cause ("not enough samples") warning, strange noises produced
+    case where bpm is changed after start note not handled

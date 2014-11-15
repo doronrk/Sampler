@@ -158,12 +158,16 @@ public:
     
     void renderNextBlock (AudioSampleBuffer&, int startSample, int numSamples) override;
     
+    double getSourceSamplePosition() const;
+    
+    double getCurrentSampleLength() const;
     
 private:
     //==============================================================================
     double pitchRatio;
     double sourceSamplePosition;
     double endSample;
+    double currentSampleLength;
     float lgain, rgain, attackReleaseLevel, attackDelta, releaseDelta;
     bool isInAttack, isInRelease;
     

@@ -87,6 +87,7 @@ SyncSamplerVoice::SyncSamplerVoice()
     : pitchRatio (0.0),
     sourceSamplePosition (0.0),
     endSample(0.0),
+    currentSampleLength(0.0),
     lgain (0.0f), rgain (0.0f),
     attackReleaseLevel (0), attackDelta (0), releaseDelta (0),
     isInAttack (false), isInRelease (false)
@@ -112,6 +113,7 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
     {
         pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0)
         * sound->sourceSampleRate / getSampleRate();
+        currentSampleLength = sound->length;
         
         double bpm = lastPosInfo.bpm;
         double secondsPerBeat = 60.0 / bpm;
@@ -175,6 +177,16 @@ void SyncSamplerVoice::pitchWheelMoved (const int /*newValue*/)
 void SyncSamplerVoice::controllerMoved (const int /*controllerNumber*/,
                                     const int /*newValue*/)
 {
+}
+
+double SyncSamplerVoice::getSourceSamplePosition() const
+{
+    return sourceSamplePosition;
+}
+
+double SyncSamplerVoice::getCurrentSampleLength() const
+{
+    return currentSampleLength;
 }
 
 //==============================================================================
