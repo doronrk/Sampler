@@ -1,11 +1,10 @@
 TODO:
     - GUI side
-        - Allow user to select duration value of sample, per each sample
-        - Display/highlight the subsection of the sample that is currently being
-        rendered
-            - remember, this subsection depends on:
-                - bpm, duration, current note
-        - Allow user to select root-note for each sample
+        - Select num voices
+        - Select sync duration
+        - Select sustain mode
+        - Select start sample
+        - Select root-note
 
     - Idea to avoid drift
         - record the ppqPosition when the note begins
