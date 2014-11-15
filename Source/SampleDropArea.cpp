@@ -213,11 +213,18 @@ void SampleDropArea::timerCallback(int timerID)
 void SampleDropArea::drawSamplePositions()
 {
     Array<double> *positions = sampler.getSamplePositions();
+    double thumbnailLength = thumbnail.getTotalLength();
+    double visibleStart = visibleThumbnailRange.getStart() / thumbnailLength;
+    //double visibleEnd = visibleThumbnailRange.getEnd() / thumbnailLength;
+    double visibleLength = visibleThumbnailRange.getLength() / thumbnailLength;
+    
+    
     
     int numToDraw = jmin(positions->size(), positionMarkers.size());
     for (int i = 0; i < numToDraw; i++)
     {
-        double thumbnailPosition = positions->getUnchecked(i) * getWidth();
+        double relPosition = (positions->getUnchecked(i) - visibleStart) / visibleLength;
+        double thumbnailPosition = relPosition * getWidth();
         DrawableRectangle *positionMarker = positionMarkers.getUnchecked(i);
         Rectangle<float> rect = Rectangle<float> (thumbnailPosition, 0.0, 1.5f, (float) (getHeight()));
         positionMarker->setRectangle(rect);
