@@ -56,8 +56,6 @@ SampleDropArea::SampleDropArea (SamplerAudioProcessor &p)
 
     thumbnail.addChangeListener(this);
     
-    addAndMakeVisible(positionMarker);
-    
     startTimer(0, 1000);
     startTimer(1, 50);
     //[/Constructor]
@@ -215,14 +213,17 @@ void SampleDropArea::timerCallback(int timerID)
 void SampleDropArea::drawSamplePositions()
 {
     Array<double> *positions = sampler.getSamplePositions();
-    for (double &position: *positions)
+    
+    int numToDraw = jmin(positions->size(), positionMarkers.size());
+    for (int i = 0; i < numToDraw; i++)
     {
-        double thumbnailPosition = position * getWidth();
+        double thumbnailPosition = positions->getUnchecked(i) * getWidth();
+        DrawableRectangle *positionMarker = positionMarkers.getUnchecked(i);
         Rectangle<float> rect = Rectangle<float> (thumbnailPosition, 0.0, 1.5f, (float) (getHeight()));
-        DBG("thumbnailPosition " + String(thumbnailPosition));
-        positionMarker.setRectangle(rect);
-        positionMarker.setFill(FillType(Colours::yellow));
-        positionMarker.setVisible(true);
+        positionMarker->setRectangle(rect);
+        positionMarker->setFill(FillType(Colours::yellow));
+        positionMarker->setVisible(true);
+        
     }
 }
 
@@ -236,6 +237,18 @@ void SampleDropArea::mouseDown(const MouseEvent &event)
 void SampleDropArea::mouseUp(const MouseEvent &event)
 {
     sampler.endPreviewSound(74);
+}
+
+void SampleDropArea::clearPositionMarkers()
+{
+    positionMarkers.clearQuick(true);
+}
+
+void SampleDropArea::addPositionMarker()
+{
+    DrawableRectangle *rect = new DrawableRectangle();
+    addAndMakeVisible(rect);
+    positionMarkers.add(rect);
 }
 
 

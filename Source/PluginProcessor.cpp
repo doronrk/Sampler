@@ -18,8 +18,7 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     sampleDropArea(new SampleDropArea(*this)),
     maxSampleLengthSeconds(500.0)
 {
-    sampler.addVoice (new SyncSamplerVoice());
-    sampler.addVoice (new SyncSamplerVoice());
+    setNumVoices(3);
 }
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
@@ -223,6 +222,18 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, defaultRootMidi, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, defaultSustainMode));
 }
 
+
+void SamplerAudioProcessor::setNumVoices(int numVoices)
+{
+    sampler.clearVoices();
+    sampleDropArea->clearPositionMarkers();
+    for (int i = 0; i < numVoices; i++)
+    {
+        sampler.addVoice(new SyncSamplerVoice());
+        sampleDropArea->addPositionMarker();
+    }
+}
+
 void SamplerAudioProcessor::beginPreviewSound(int midiNoteNumber)
 {
     sampler.noteOn(0, midiNoteNumber, .80, lastPosInfo);
@@ -232,7 +243,6 @@ void SamplerAudioProcessor::endPreviewSound(int midiNoteNumber)
 {
     sampler.noteOff(0, midiNoteNumber, .80, true);
 }
-
 
 Array<double> *SamplerAudioProcessor::getSamplePositions()
 {

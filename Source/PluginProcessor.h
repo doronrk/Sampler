@@ -69,6 +69,8 @@ public:
     
     //==============================================================================
     void setNewSample(AudioFormatReader& audioReader);
+    void setNumVoices(int numVoices);
+    
     void beginPreviewSound(int midiNoteNumber);
     void endPreviewSound(int midiNoteNumber);
     

@@ -59,6 +59,10 @@ public:
     
     void mouseDown(const MouseEvent &event);
     void mouseUp(const MouseEvent &event);
+    
+    void addPositionMarker();
+    void clearPositionMarkers();
+
 
     //[/UserMethods]
 
@@ -69,7 +73,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     ScrollBar thumbnailScroller;
     Range<double> visibleThumbnailRange;
-    DrawableRectangle positionMarker;
+    OwnedArray<DrawableRectangle> positionMarkers;
     
     //File lastFileDropped; // the sample
     ScopedPointer<AudioFormatReader> reader;
