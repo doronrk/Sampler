@@ -253,9 +253,12 @@ Array<double> *SamplerAudioProcessor::getSamplePositions()
         SyncSynthesiserVoice *voice= sampler.getVoice(i);
         if (const SyncSamplerVoice* const syncVoice = dynamic_cast <const SyncSamplerVoice*> (voice))
         {
-            double samplePos = syncVoice->getSourceSamplePosition();
-            double sampleLen = syncVoice->getCurrentSampleLength();
-            positions->add(samplePos/sampleLen);
+            if (syncVoice->isPlayingChannel(0))
+            {
+                double samplePos = syncVoice->getSourceSamplePosition();
+                double sampleLen = syncVoice->getCurrentSampleLength();
+                positions->add(samplePos/sampleLen);
+            }
         }
     }
     return positions;

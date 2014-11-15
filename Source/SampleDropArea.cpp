@@ -223,7 +223,12 @@ void SampleDropArea::drawSamplePositions()
         positionMarker->setRectangle(rect);
         positionMarker->setFill(FillType(Colours::yellow));
         positionMarker->setVisible(true);
-        
+    }
+    // clear the voices not being played
+    for (int i = numToDraw; i < positionMarkers.size(); i++)
+    {
+        DrawableRectangle *positionMarker = positionMarkers.getUnchecked(i);
+        positionMarker->setVisible(false);
     }
 }
 
