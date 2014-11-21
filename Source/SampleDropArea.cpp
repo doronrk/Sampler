@@ -215,7 +215,6 @@ void SampleDropArea::drawSamplePositions()
     Array<double> *positions = sampler.getSamplePositions();
     double thumbnailLength = thumbnail.getTotalLength();
     double visibleStart = visibleThumbnailRange.getStart() / thumbnailLength;
-    //double visibleEnd = visibleThumbnailRange.getEnd() / thumbnailLength;
     double visibleLength = visibleThumbnailRange.getLength() / thumbnailLength;
     
     
@@ -242,13 +241,13 @@ void SampleDropArea::drawSamplePositions()
 
 void SampleDropArea::mouseDown(const MouseEvent &event)
 {
-    sampler.beginPreviewSound(74);
+    sampler.beginPreviewSound();
     
 }
 
 void SampleDropArea::mouseUp(const MouseEvent &event)
 {
-    sampler.endPreviewSound(74);
+    sampler.endPreviewSound();
 }
 
 void SampleDropArea::clearPositionMarkers()

@@ -22,9 +22,9 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
+#include "SampleDropArea.h"
 //[/Headers]
 
-#include "SampleDropArea.h"
 
 
 //==============================================================================
@@ -35,11 +35,13 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class Gui  : public AudioProcessorEditor
+class Gui  : public AudioProcessorEditor,
+             public ComboBoxListener,
+             public ButtonListener
 {
 public:
     //==============================================================================
-    Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea);
+    Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea_);
     ~Gui();
 
     //==============================================================================
@@ -48,6 +50,8 @@ public:
 
     void paint (Graphics& g);
     void resized();
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged);
+    void buttonClicked (Button* buttonThatWasClicked);
 
 
 
@@ -57,10 +61,21 @@ private:
     {
         return static_cast<SamplerAudioProcessor&>(processor);
     }
+    ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
     //[/UserVariables]
 
     //==============================================================================
-    ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
+    ScopedPointer<ComboBox> rootMidiNoteComboBox;
+    ScopedPointer<Label> midiRootNoteLabel;
+    ScopedPointer<Label> numVoicesLabel;
+    ScopedPointer<ComboBox> numVoicesComboBox;
+    ScopedPointer<ComboBox> sustainModeComboBox;
+    ScopedPointer<Label> sustainModeLabel;
+    ScopedPointer<ToggleButton> syncToggleButton;
+    ScopedPointer<Component> dummySampleArea;
+    ScopedPointer<TextEditor> durationTextEditor;
+    ScopedPointer<Label> durationLabel;
+    ScopedPointer<Label> durationDescription;
 
 
     //==============================================================================

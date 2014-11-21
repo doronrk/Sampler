@@ -71,13 +71,15 @@ public:
     void setNewSample(AudioFormatReader& audioReader);
     void setNumVoices(int numVoices);
     
-    void beginPreviewSound(int midiNoteNumber);
-    void endPreviewSound(int midiNoteNumber);
+    void beginPreviewSound();
+    void endPreviewSound();
     
     
     Array<double>* getSamplePositions();
     
-    
+    // default parameters
+    const int defaultRootMidiNote = 62;
+    const int defaultNumVoices = 4;
 
 private:
     //==============================================================================
