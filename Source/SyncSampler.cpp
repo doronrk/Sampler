@@ -82,6 +82,16 @@ bool SyncSamplerSound::appliesToChannel (int /*midiChannel*/)
     return true;
 }
 
+void SyncSamplerSound::setRootMidiNote(int midiNote)
+{
+    midiRootNote = midiNote;
+}
+
+void SyncSamplerSound::setSustainMode(SyncSamplerSound::SustainMode mode)
+{
+    sustainMode = mode;
+}
+
 //==============================================================================
 SyncSamplerVoice::SyncSamplerVoice()
     : pitchRatio (0.0),

@@ -134,8 +134,8 @@ Gui::Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea_)
     {
         numVoicesComboBox->addItem(String(voiceNum), voiceNum);
     }
-    numVoicesComboBox->setSelectedId(p.defaultNumVoices);
-    rootMidiNoteComboBox->setSelectedId(p.defaultRootMidiNote - 1);
+    numVoicesComboBox->setSelectedId(p.getNumVoices());
+    rootMidiNoteComboBox->setSelectedItemIndex(p.getRootMidiNote());
     sustainModeComboBox->setSelectedId(1);
     //[/Constructor]
 }
@@ -195,19 +195,21 @@ void Gui::resized()
 void Gui::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 {
     //[UsercomboBoxChanged_Pre]
-    SamplerAudioProcessor &sampler = getSamplerAudioProcessor();
+    SamplerAudioProcessor &p = getSamplerAudioProcessor();
     //[/UsercomboBoxChanged_Pre]
 
     if (comboBoxThatHasChanged == rootMidiNoteComboBox)
     {
         //[UserComboBoxCode_rootMidiNoteComboBox] -- add your combo box handling code here..
+        int midiNum = rootMidiNoteComboBox->getSelectedItemIndex();
+        p.setRootMidiNote(midiNum);
         //[/UserComboBoxCode_rootMidiNoteComboBox]
     }
     else if (comboBoxThatHasChanged == numVoicesComboBox)
     {
         //[UserComboBoxCode_numVoicesComboBox] -- add your combo box handling code here..
         int numVoices = numVoicesComboBox->getSelectedId();
-        sampler.setNumVoices(numVoices);
+        p.setNumVoices(numVoices);
         //[/UserComboBoxCode_numVoicesComboBox]
     }
     else if (comboBoxThatHasChanged == sustainModeComboBox)

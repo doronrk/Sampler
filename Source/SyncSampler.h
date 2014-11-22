@@ -108,6 +108,8 @@ public:
     bool appliesToNote (int midiNoteNumber) override;
     bool appliesToChannel (int midiChannel) override;
     
+    void setRootMidiNote(int midiNote);
+    void setSustainMode(SyncSamplerSound::SustainMode mode);
     
 private:
     //==============================================================================

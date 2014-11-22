@@ -69,7 +69,11 @@ public:
     
     //==============================================================================
     void setNewSample(AudioFormatReader& audioReader);
+    void setRootMidiNote(int note);
     void setNumVoices(int numVoices);
+    
+    int getRootMidiNote();
+    int getNumVoices();
     
     void beginPreviewSound();
     void endPreviewSound();
@@ -77,14 +81,11 @@ public:
     
     Array<double>* getSamplePositions();
     
-    // default parameters
-    const int defaultRootMidiNote = 62;
-    const int defaultNumVoices = 4;
-
 private:
     //==============================================================================
     SyncSynthesiser sampler;
     ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
+    ReferenceCountedObjectPtr<SyncSynthesiserSound> currentSound;
     
     // this keeps a copy of the last set of time info that was acquired during an audio
     // callback
@@ -92,6 +93,12 @@ private:
     void updatePositionInfo();
     
     const double maxSampleLengthSeconds;
+    
+    
+    //  parameters
+    int rootMidiNote;
+    int numVoices;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };
 

@@ -16,9 +16,11 @@
 //==============================================================================
 SamplerAudioProcessor::SamplerAudioProcessor():
     sampleDropArea(new SampleDropArea(*this)),
-    maxSampleLengthSeconds(500.0)
+    maxSampleLengthSeconds(500.0),
+    rootMidiNote(60), // default C3
+    numVoices(4)
 {
-    setNumVoices(defaultNumVoices);
+    setNumVoices(numVoices);
 }
 
 SamplerAudioProcessor::~SamplerAudioProcessor()
@@ -218,29 +220,48 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     
     double defaultDurationRelQuarterNote = 1.0;
     SyncSamplerSound::SustainMode defaultSustainMode = SyncSamplerSound::SustainMode::LoopReverse;
-    sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, defaultRootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, defaultSustainMode));
+    currentSound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, defaultSustainMode));
 }
 
+void SamplerAudioProcessor::setRootMidiNote(int note)
+{
+    rootMidiNote = note;
+    if (SyncSamplerSound* const syncCurrentSound = dynamic_cast <SyncSamplerSound*> (currentSound.get()))
+    {
+        syncCurrentSound->setRootMidiNote(note);
+    }
+}
 
-void SamplerAudioProcessor::setNumVoices(int numVoices)
+void SamplerAudioProcessor::setNumVoices(int nVoices)
 {
     sampler.clearVoices();
     sampleDropArea->clearPositionMarkers();
-    for (int i = 0; i < numVoices; i++)
+    for (int i = 0; i < nVoices; i++)
     {
         sampler.addVoice(new SyncSamplerVoice());
         sampleDropArea->addPositionMarker();
     }
+    this->numVoices = nVoices;
+}
+
+int SamplerAudioProcessor::getRootMidiNote()
+{
+    return rootMidiNote;
+}
+
+int SamplerAudioProcessor::getNumVoices()
+{
+    return numVoices;
 }
 
 void SamplerAudioProcessor::beginPreviewSound()
 {
-    sampler.noteOn(0, defaultRootMidiNote, .80, lastPosInfo);
+    sampler.noteOn(0, rootMidiNote, .80, lastPosInfo);
 }
 
 void SamplerAudioProcessor::endPreviewSound()
 {
-    sampler.noteOff(0, defaultRootMidiNote, .80, true);
+    sampler.noteOff(0, rootMidiNote, .80, true);
 }
 
 Array<double> *SamplerAudioProcessor::getSamplePositions()
