@@ -88,6 +88,7 @@ public:
                   double attackTimeSecs,
                   double releaseTimeSecs,
                   double maxSampleLengthSeconds,
+                  bool syncOn,
                   double durationRelQuarterNote,
                   SustainMode sustainMode);
     
@@ -123,6 +124,7 @@ private:
     BigInteger midiNotes;
     int length, attackSamples, releaseSamples;
     int midiRootNote;
+    bool syncOn;
     double durationRelQuarterNote;
     SustainMode sustainMode;
     

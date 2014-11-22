@@ -20,7 +20,7 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     rootMidiNote(60), // default C3
     numVoices(4),
     sustainMode(SyncSamplerSound::SustainMode::SINGLE),
-    syncOn(true)
+    syncOn(false)
 {
     setNumVoices(numVoices);
 }
@@ -221,7 +221,7 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     allNotes.setRange (0, 128, true);
     
     double defaultDurationRelQuarterNote = 1.0;
-    SyncSynthesiserSound *sound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, sustainMode));
+    SyncSynthesiserSound *sound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, syncOn, defaultDurationRelQuarterNote, sustainMode));
     currentSound = dynamic_cast <SyncSamplerSound*> (sound);
 }
 

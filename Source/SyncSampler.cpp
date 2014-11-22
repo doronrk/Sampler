@@ -42,11 +42,13 @@ SyncSamplerSound::SyncSamplerSound (const String& soundName,
                             const double attackTimeSecs,
                             const double releaseTimeSecs,
                             const double maxSampleLengthSeconds,
+                            const bool syncOn_,
                             const double durationRelQuarterNote_,
                             const SustainMode sustainMode_)
 : name (soundName),
 midiNotes (notes),
 midiRootNote (midiNoteForNormalPitch),
+syncOn(syncOn_),
 durationRelQuarterNote(durationRelQuarterNote_),
 sustainMode(sustainMode_)
 {
@@ -121,21 +123,26 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
 {
     if (const SyncSamplerSound* const sound = dynamic_cast <const SyncSamplerSound*> (s))
     {
-        pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0)
-        * sound->sourceSampleRate / getSampleRate();
+        pitchRatio = pow (2.0, (midiNoteNumber - sound->midiRootNote) / 12.0) * sound->sourceSampleRate / getSampleRate();
         currentSampleLength = sound->length;
         
-        double bpm = lastPosInfo.bpm;
-        double secondsPerBeat = 60.0 / bpm;
-        rightmostSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
-        
-        if (rightmostSample >= sound->length)
+        if (sound->syncOn)
         {
-            DBG("duration requires too many samples");
-            DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
-            DBG("rightmostSample " + String(rightmostSample));
-            DBG("sound->length " + String(sound->length));
-            return;
+            double bpm = lastPosInfo.bpm;
+            double secondsPerBeat = 60.0 / bpm;
+            rightmostSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
+            
+            if (rightmostSample >= sound->length)
+            {
+                DBG("duration requires too many samples");
+                DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
+                DBG("rightmostSample " + String(rightmostSample));
+                DBG("sound->length " + String(sound->length));
+                return;
+            }
+        } else
+        {
+            rightmostSample = currentSampleLength;
         }
         
         SyncSamplerSound::SustainMode sustainMode = sound->sustainMode;
