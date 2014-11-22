@@ -136,7 +136,7 @@ Gui::Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea_)
     }
     numVoicesComboBox->setSelectedId(p.getNumVoices());
     rootMidiNoteComboBox->setSelectedItemIndex(p.getRootMidiNote());
-    sustainModeComboBox->setSelectedId(1);
+    sustainModeComboBox->setSelectedItemIndex(p.getSustainMode());
     //[/Constructor]
 }
 
@@ -215,6 +215,8 @@ void Gui::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == sustainModeComboBox)
     {
         //[UserComboBoxCode_sustainModeComboBox] -- add your combo box handling code here..
+        int mode = sustainModeComboBox->getSelectedItemIndex();
+        p.setSustainMode(SyncSamplerSound::SustainMode(mode));
         //[/UserComboBoxCode_sustainModeComboBox]
     }
 

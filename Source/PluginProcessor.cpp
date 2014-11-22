@@ -18,7 +18,9 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     sampleDropArea(new SampleDropArea(*this)),
     maxSampleLengthSeconds(500.0),
     rootMidiNote(60), // default C3
-    numVoices(4)
+    numVoices(4),
+    sustainMode(SyncSamplerSound::SustainMode::SINGLE),
+    syncOn(true)
 {
     setNumVoices(numVoices);
 }
@@ -219,16 +221,16 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     allNotes.setRange (0, 128, true);
     
     double defaultDurationRelQuarterNote = 1.0;
-    SyncSamplerSound::SustainMode defaultSustainMode = SyncSamplerSound::SustainMode::LoopReverse;
-    currentSound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, defaultSustainMode));
+    SyncSynthesiserSound *sound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, defaultDurationRelQuarterNote, sustainMode));
+    currentSound = dynamic_cast <SyncSamplerSound*> (sound);
 }
 
 void SamplerAudioProcessor::setRootMidiNote(int note)
 {
     rootMidiNote = note;
-    if (SyncSamplerSound* const syncCurrentSound = dynamic_cast <SyncSamplerSound*> (currentSound.get()))
+    if (currentSound != nullptr)
     {
-        syncCurrentSound->setRootMidiNote(note);
+        currentSound->setRootMidiNote(note);
     }
 }
 
@@ -244,6 +246,15 @@ void SamplerAudioProcessor::setNumVoices(int nVoices)
     this->numVoices = nVoices;
 }
 
+void SamplerAudioProcessor::setSustainMode(SyncSamplerSound::SustainMode mode)
+{
+    sustainMode = mode;
+    if (currentSound != nullptr)
+    {
+        currentSound->setSustainMode(mode);
+    }
+}
+
 int SamplerAudioProcessor::getRootMidiNote()
 {
     return rootMidiNote;
@@ -252,6 +263,11 @@ int SamplerAudioProcessor::getRootMidiNote()
 int SamplerAudioProcessor::getNumVoices()
 {
     return numVoices;
+}
+
+SyncSamplerSound::SustainMode SamplerAudioProcessor::getSustainMode()
+{
+    return sustainMode;
 }
 
 void SamplerAudioProcessor::beginPreviewSound()

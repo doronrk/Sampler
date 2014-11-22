@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SyncSynthesiser.h"
+#include "SyncSampler.h"
 
 //==============================================================================
 /**
@@ -71,9 +72,11 @@ public:
     void setNewSample(AudioFormatReader& audioReader);
     void setRootMidiNote(int note);
     void setNumVoices(int numVoices);
+    void setSustainMode(SyncSamplerSound::SustainMode mode);
     
     int getRootMidiNote();
     int getNumVoices();
+    SyncSamplerSound::SustainMode getSustainMode();
     
     void beginPreviewSound();
     void endPreviewSound();
@@ -85,7 +88,7 @@ private:
     //==============================================================================
     SyncSynthesiser sampler;
     ReferenceCountedObjectPtr<SampleDropArea> sampleDropArea;
-    ReferenceCountedObjectPtr<SyncSynthesiserSound> currentSound;
+    ReferenceCountedObjectPtr<SyncSamplerSound> currentSound;
     
     // this keeps a copy of the last set of time info that was acquired during an audio
     // callback
@@ -98,6 +101,8 @@ private:
     //  parameters
     int rootMidiNote;
     int numVoices;
+    SyncSamplerSound::SustainMode sustainMode;
+    bool syncOn;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };

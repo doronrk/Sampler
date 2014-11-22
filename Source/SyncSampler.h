@@ -60,7 +60,7 @@ class SyncSamplerSound    : public SyncSynthesiserSound
     
 public:
     
-    enum SustainMode { Once, LoopBeginning, LoopReverse};
+    enum SustainMode { SINGLE, LOOP, REVERSE, LOOP_REVERSE};
 
     //==============================================================================
     /** Creates a sampled sound from an audio reader.
@@ -168,7 +168,7 @@ private:
     //==============================================================================
     double pitchRatio;
     double sourceSamplePosition;
-    double endSample;
+    double rightmostSample;
     double currentSampleLength;
     float lgain, rgain, attackReleaseLevel, attackDelta, releaseDelta;
     bool isInAttack, isInRelease;

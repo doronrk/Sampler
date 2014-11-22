@@ -96,7 +96,7 @@ void SyncSamplerSound::setSustainMode(SyncSamplerSound::SustainMode mode)
 SyncSamplerVoice::SyncSamplerVoice()
     : pitchRatio (0.0),
     sourceSamplePosition (0.0),
-    endSample(0.0),
+    rightmostSample(0.0),
     currentSampleLength(0.0),
     lgain (0.0f), rgain (0.0f),
     attackReleaseLevel (0), attackDelta (0), releaseDelta (0),
@@ -127,18 +127,34 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
         
         double bpm = lastPosInfo.bpm;
         double secondsPerBeat = 60.0 / bpm;
-        endSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
+        rightmostSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
         
-        if (endSample >= sound->length)
+        if (rightmostSample >= sound->length)
         {
             DBG("duration requires too many samples");
             DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
-            DBG("endSample " + String(endSample));
+            DBG("rightmostSample " + String(rightmostSample));
             DBG("sound->length " + String(sound->length));
             return;
         }
+        
+        SyncSamplerSound::SustainMode sustainMode = sound->sustainMode;
+        switch (sustainMode)
+        {
+            case SyncSamplerSound::SustainMode::SINGLE:
+                sourceSamplePosition = 0.0;
+                break;
+            case SyncSamplerSound::SustainMode::LOOP:
+                sourceSamplePosition = 0.0;
+                break;
+            case SyncSamplerSound::SustainMode::REVERSE:
+                sourceSamplePosition = rightmostSample;
+                pitchRatio = -pitchRatio;
+                break;
+            default: // LOOP_REVERSE
+                sourceSamplePosition = 0.0;
+        }
 
-        sourceSamplePosition = 0.0;
         lgain = velocity;
         rgain = velocity;
         
@@ -266,18 +282,21 @@ void SyncSamplerVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int sta
             
             sourceSamplePosition += pitchRatio;
             
-            if (sourceSamplePosition > endSample)
+            if (sourceSamplePosition > rightmostSample)
             {
                 switch (sustainMode)
                 {
-                    case SyncSamplerSound::Once:
+                    case SyncSamplerSound::SustainMode::SINGLE:
                         stopNote (0.0f, false);
                         break;
-                    case SyncSamplerSound::LoopBeginning:
+                    case SyncSamplerSound::SustainMode::LOOP:
                         sourceSamplePosition = 0;
                         break;
-                    default:
-                        // loop reverse
+                    case SyncSamplerSound::SustainMode::REVERSE:
+                        DBG("Warning! sourceSamplePosition > rightmostSample in REVERSE mode");
+                        sourceSamplePosition = rightmostSample;
+                        break;
+                    default: // LOOP_REVERSE
                         pitchRatio = - pitchRatio;
                 }
             }
@@ -285,14 +304,19 @@ void SyncSamplerVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int sta
             {
                 switch (sustainMode)
                 {
-                    case SyncSamplerSound::LoopReverse:
-                        sourceSamplePosition = 0.0;
-                        pitchRatio = - pitchRatio;
+                    case SyncSamplerSound::SustainMode::SINGLE:
+                        DBG("Warning! sourceSamplePosition < 0 in SINGLE mode");
+                        sourceSamplePosition = 0;
                         break;
-                    default:
-                        DBG("sourceSamplePosition < 0 not in LoopReverseMode");
-                        DBG("sourceSamplePosition " + String(sourceSamplePosition));
-                        jassertfalse;
+                    case SyncSamplerSound::SustainMode::LOOP:
+                        DBG("Warning! sourceSamplePosition < 0 in LOOP mode");
+                        sourceSamplePosition = 0;
+                        break;
+                    case SyncSamplerSound::SustainMode::REVERSE:
+                        stopNote (0.0f, false);
+                        break;
+                    default: // LOOP_REVERSE
+                        pitchRatio = - pitchRatio;
                 }
             }
         }
