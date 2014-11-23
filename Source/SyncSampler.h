@@ -111,6 +111,7 @@ public:
     
     void setRootMidiNote(int midiNote);
     void setSustainMode(SyncSamplerSound::SustainMode mode);
+    void setSyncState(bool isOn);
     
 private:
     //==============================================================================

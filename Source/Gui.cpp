@@ -137,6 +137,7 @@ Gui::Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea_)
     numVoicesComboBox->setSelectedId(p.getNumVoices());
     rootMidiNoteComboBox->setSelectedItemIndex(p.getRootMidiNote());
     sustainModeComboBox->setSelectedItemIndex(p.getSustainMode());
+    syncToggleButton->setToggleState(p.getSyncState(), sendNotification);
     //[/Constructor]
 }
 
@@ -227,6 +228,7 @@ void Gui::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 void Gui::buttonClicked (Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
+    SamplerAudioProcessor &p = getSamplerAudioProcessor();
     //[/UserbuttonClicked_Pre]
 
     if (buttonThatWasClicked == syncToggleButton)
@@ -236,13 +238,8 @@ void Gui::buttonClicked (Button* buttonThatWasClicked)
         durationTextEditor->setVisible(isOn);
         durationLabel->setVisible(isOn);
         durationDescription->setVisible(isOn);
-        if (isOn)
-        {
-            // update state of sampler
-        }
-        else{
-            // update state of sampler
-        }
+        p.setSyncState(isOn);
+        
         //[/UserButtonCode_syncToggleButton]
     }
 

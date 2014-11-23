@@ -20,7 +20,7 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     rootMidiNote(60), // default C3
     numVoices(4),
     sustainMode(SyncSamplerSound::SustainMode::SINGLE),
-    syncOn(false)
+    syncOn(true)
 {
     setNumVoices(numVoices);
 }
@@ -255,6 +255,15 @@ void SamplerAudioProcessor::setSustainMode(SyncSamplerSound::SustainMode mode)
     }
 }
 
+void SamplerAudioProcessor::setSyncState(bool isOn)
+{
+    syncOn = isOn;
+    if (currentSound != nullptr)
+    {
+        currentSound->setSyncState(isOn);
+    }
+}
+
 int SamplerAudioProcessor::getRootMidiNote()
 {
     return rootMidiNote;
@@ -268,6 +277,11 @@ int SamplerAudioProcessor::getNumVoices()
 SyncSamplerSound::SustainMode SamplerAudioProcessor::getSustainMode()
 {
     return sustainMode;
+}
+
+bool SamplerAudioProcessor::getSyncState()
+{
+    return syncOn;
 }
 
 void SamplerAudioProcessor::beginPreviewSound()

@@ -94,6 +94,11 @@ void SyncSamplerSound::setSustainMode(SyncSamplerSound::SustainMode mode)
     sustainMode = mode;
 }
 
+void SyncSamplerSound::setSyncState(bool isOn)
+{
+    syncOn = isOn;
+}
+
 //==============================================================================
 SyncSamplerVoice::SyncSamplerVoice()
     : pitchRatio (0.0),

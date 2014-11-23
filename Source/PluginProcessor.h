@@ -73,10 +73,12 @@ public:
     void setRootMidiNote(int note);
     void setNumVoices(int numVoices);
     void setSustainMode(SyncSamplerSound::SustainMode mode);
+    void setSyncState(bool isOn);
     
     int getRootMidiNote();
     int getNumVoices();
     SyncSamplerSound::SustainMode getSustainMode();
+    bool getSyncState();
     
     void beginPreviewSound();
     void endPreviewSound();
