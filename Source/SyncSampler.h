@@ -112,6 +112,7 @@ public:
     void setRootMidiNote(int midiNote);
     void setSustainMode(SyncSamplerSound::SustainMode mode);
     void setSyncState(bool isOn);
+    void setDuration(double dur);
     
 private:
     //==============================================================================
@@ -126,7 +127,7 @@ private:
     int length, attackSamples, releaseSamples;
     int midiRootNote;
     bool syncOn;
-    double durationRelQuarterNote;
+    double duration; // relative to a quarter note (i.e. 1.0 => quarter note)
     SustainMode sustainMode;
     
     JUCE_LEAK_DETECTOR (SyncSamplerSound)

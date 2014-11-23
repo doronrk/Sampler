@@ -20,7 +20,8 @@ SamplerAudioProcessor::SamplerAudioProcessor():
     rootMidiNote(60), // default C3
     numVoices(4),
     sustainMode(SyncSamplerSound::SustainMode::SINGLE),
-    syncOn(true)
+    syncOn(true),
+    duration(1.0)
 {
     setNumVoices(numVoices);
 }
@@ -220,8 +221,7 @@ void SamplerAudioProcessor::setNewSample(AudioFormatReader& audioReader)
     BigInteger allNotes;
     allNotes.setRange (0, 128, true);
     
-    double defaultDurationRelQuarterNote = 1.0;
-    SyncSynthesiserSound *sound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, syncOn, defaultDurationRelQuarterNote, sustainMode));
+    SyncSynthesiserSound *sound = sampler.addSound (new SyncSamplerSound ("some name", audioReader, allNotes, rootMidiNote, 0.0, 0.0, maxSampleLengthSeconds, syncOn, duration, sustainMode));
     currentSound = dynamic_cast <SyncSamplerSound*> (sound);
 }
 
@@ -264,6 +264,15 @@ void SamplerAudioProcessor::setSyncState(bool isOn)
     }
 }
 
+void SamplerAudioProcessor::setDuration(double dur)
+{
+    duration = dur;
+    if (currentSound != nullptr)
+    {
+        currentSound->setDuration(dur);
+    }
+}
+
 int SamplerAudioProcessor::getRootMidiNote()
 {
     return rootMidiNote;
@@ -284,6 +293,11 @@ bool SamplerAudioProcessor::getSyncState()
     return syncOn;
 }
 
+double SamplerAudioProcessor::getDuration()
+{
+    return duration;
+}
+
 void SamplerAudioProcessor::beginPreviewSound()
 {
     sampler.noteOn(0, rootMidiNote, .80, lastPosInfo);
@@ -294,6 +308,8 @@ void SamplerAudioProcessor::endPreviewSound()
     sampler.noteOff(0, rootMidiNote, .80, true);
 }
 
+// returns an array of doubles representing the
+// sample position divided by the sample length
 Array<double> *SamplerAudioProcessor::getSamplePositions()
 {
     Array<double> *positions = new Array<double>();

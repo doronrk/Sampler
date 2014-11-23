@@ -239,7 +239,6 @@ void Gui::buttonClicked (Button* buttonThatWasClicked)
         durationLabel->setVisible(isOn);
         durationDescription->setVisible(isOn);
         p.setSyncState(isOn);
-        
         //[/UserButtonCode_syncToggleButton]
     }
 

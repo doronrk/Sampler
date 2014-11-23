@@ -74,11 +74,14 @@ public:
     void setNumVoices(int numVoices);
     void setSustainMode(SyncSamplerSound::SustainMode mode);
     void setSyncState(bool isOn);
+    void setDuration(double dur);
     
     int getRootMidiNote();
     int getNumVoices();
     SyncSamplerSound::SustainMode getSustainMode();
     bool getSyncState();
+    double getDuration();
+    
     
     void beginPreviewSound();
     void endPreviewSound();
@@ -105,6 +108,7 @@ private:
     int numVoices;
     SyncSamplerSound::SustainMode sustainMode;
     bool syncOn;
+    double duration;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };

@@ -43,13 +43,13 @@ SyncSamplerSound::SyncSamplerSound (const String& soundName,
                             const double releaseTimeSecs,
                             const double maxSampleLengthSeconds,
                             const bool syncOn_,
-                            const double durationRelQuarterNote_,
+                            const double duration_,
                             const SustainMode sustainMode_)
 : name (soundName),
 midiNotes (notes),
 midiRootNote (midiNoteForNormalPitch),
 syncOn(syncOn_),
-durationRelQuarterNote(durationRelQuarterNote_),
+duration(duration_),
 sustainMode(sustainMode_)
 {
     sourceSampleRate = source.sampleRate;
@@ -99,6 +99,11 @@ void SyncSamplerSound::setSyncState(bool isOn)
     syncOn = isOn;
 }
 
+void SyncSamplerSound::setDuration(double dur)
+{
+    duration = dur;
+}
+
 //==============================================================================
 SyncSamplerVoice::SyncSamplerVoice()
     : pitchRatio (0.0),
@@ -135,12 +140,12 @@ void SyncSamplerVoice::startNote (const int midiNoteNumber,
         {
             double bpm = lastPosInfo.bpm;
             double secondsPerBeat = 60.0 / bpm;
-            rightmostSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->durationRelQuarterNote;
+            rightmostSample = secondsPerBeat * getSampleRate() * pitchRatio * sound->duration;
             
             if (rightmostSample >= sound->length)
             {
                 DBG("duration requires too many samples");
-                DBG("sound->durationRelQuarterNote " + String(sound->durationRelQuarterNote));
+                DBG("sound->durationRelQuarterNote " + String(sound->duration));
                 DBG("rightmostSample " + String(rightmostSample));
                 DBG("sound->length " + String(sound->length));
                 return;
