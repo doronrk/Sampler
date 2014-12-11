@@ -138,6 +138,9 @@ Gui::Gui (SamplerAudioProcessor &p, SampleDropArea &sampleDropArea_)
     rootMidiNoteComboBox->setSelectedItemIndex(p.getRootMidiNote());
     sustainModeComboBox->setSelectedItemIndex(p.getSustainMode());
     syncToggleButton->setToggleState(p.getSyncState(), sendNotification);
+    durationTextEditor->setText(String(p.getDuration()));
+    durationTextEditor->addListener(this);
+    durationTextEditor->setInputRestrictions(0, "0123456789.");
     //[/Constructor]
 }
 
@@ -249,6 +252,16 @@ void Gui::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void Gui::textEditorReturnKeyPressed(TextEditor& textEd)
+{
+    SamplerAudioProcessor &p = getSamplerAudioProcessor();
+    if (&textEd == durationTextEditor)
+    {
+        double duration = durationTextEditor->getText().getDoubleValue();
+        p.setDuration(duration);
+    }
+}
 //[/MiscUserCode]
 
 
@@ -261,7 +274,7 @@ void Gui::buttonClicked (Button* buttonThatWasClicked)
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="Gui" componentName="" parentClasses="public AudioProcessorEditor"
+<JUCER_COMPONENT documentType="Component" className="Gui" componentName="" parentClasses="public AudioProcessorEditor, TextEditor::Listener"
                  constructorParams="SamplerAudioProcessor &amp;p, SampleDropArea &amp;sampleDropArea_"
                  variableInitialisers="AudioProcessorEditor (&amp;p)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"

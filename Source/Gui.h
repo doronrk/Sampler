@@ -36,6 +36,7 @@
                                                                     //[/Comments]
 */
 class Gui  : public AudioProcessorEditor,
+             TextEditor::Listener,
              public ComboBoxListener,
              public ButtonListener
 {
@@ -46,6 +47,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void textEditorReturnKeyPressed(TextEditor& textEd);
     //[/UserMethods]
 
     void paint (Graphics& g);

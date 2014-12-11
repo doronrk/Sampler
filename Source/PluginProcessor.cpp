@@ -267,6 +267,7 @@ void SamplerAudioProcessor::setSyncState(bool isOn)
 void SamplerAudioProcessor::setDuration(double dur)
 {
     duration = dur;
+    DBG("duration " + String(duration));
     if (currentSound != nullptr)
     {
         currentSound->setDuration(dur);
