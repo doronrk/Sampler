@@ -260,6 +260,8 @@ void Gui::textEditorReturnKeyPressed(TextEditor& textEd)
     {
         double duration = durationTextEditor->getText().getDoubleValue();
         p.setDuration(duration);
+        textEd.hasKeyboardFocus(true);
+        textEd.unfocusAllComponents();
     }
 }
 //[/MiscUserCode]
