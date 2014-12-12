@@ -1,16 +1,21 @@
-TODO:
-    - GUI side
-        - Select num voices
-        - Select sync duration
-        - Select sustain mode
-        - Select start sample
-        - Select root-note
+Description:
+    In sync-mode, this plug-in normalizes the playback duration of each note. 
+    This is implemented by dynamically calculating the sample end for every voice according to pitch.
+    For example, lower pitches yield an end sample closer to the start sample since lower pitches move through the sample more slowly.
+    High pitches yield an end sample further from the start sample since high pitches move through the sample more quickly.
 
-    - Idea to avoid drift
-        - record the ppqPosition when the note begins
-        - if duration is a 1/4 note, should recycle at origin ppq + 1
+    Consider a sample with root note C3, sample rate of 44100, and total length 88200 samples. Let's assume the DAW is set to 60 bpm.
+    In sync-mode, with duration set to .5 (a half note), playing C3 will begin at sample 0, and end at sample 22050.
+    With duration set to 1.0, playing C3 will begin at sample 0, and end at sample 44100.
+    With duration set to 1.0, playing C2 will begin at sample 0, and end at sample 22050.
+    With duration set to 1.0, playing C4 will begin at sample 0, and end at sample 88200.
+    Notice that notes above C4 cannot be rendered in sync-mode with duration set to 1.0 because syncing the playback duration in this case requires more samples than the total length of the sample
 
 
-Problems:
+New features:
+    explicit warning/handling of the case where a MIDI note requires more samples than are available in sync mode
+    select start sample by clicking on sample region
+
+Bugs:
     crashes Live when aif dropped 
     case where bpm is changed after start note not handled
