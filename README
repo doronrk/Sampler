@@ -12,7 +12,7 @@ Description:
     Notice that notes above C4 cannot be rendered in sync-mode with duration set to 1.0 because syncing the playback duration in this case requires more samples than the total length of the sample
 
 
-New features:
+Features needed:
     explicit warning/handling of the case where a MIDI note requires more samples than are available in sync mode
     select start sample by clicking on sample region
 
